@@ -1,7 +1,6 @@
 from skyfield.api import load, wgs84
 import reverse_geocoder as rg
-
-city = "Frankfurt"
+from geopy.geocoders import Nominatim
 
 url = "https://celestrak.org/NORAD/elements/gp.php?CATNR=25544&FORMAT=tle"
 
@@ -19,6 +18,27 @@ lon = float(ground.longitude.degrees)
 
 places = rg.search((lat, lon), mode=1, verbose=False)
 place = places[0]
+
+geolocator = Nominatim(user_agent="iss-pass-predictor")
+city = input("What City to look up? ")
+location = geolocator.geocode(city, language="en")
+
+print(f"City to look up: {location}")
+
+observer = wgs84.latlon(location.latitude, location.longitude)
+t_end = t + 7
+times, events = iss.find_events(observer, t, t_end, altitude_degrees=10.0)
+
+for ti, event in zip(times, events):
+    if event == 0:
+        print(f"Next pass over {city}: {ti.utc_strftime()}")
+        break
+
+print()
+print("-" * 40)
+print()
+print("General information")
+print()
 
 print(f"The ISS is at latitude {lat:.4f}, and longitude {lon:.4f}")
 
