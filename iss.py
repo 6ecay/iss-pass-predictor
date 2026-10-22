@@ -9,8 +9,6 @@ iss = satellites[0]
 
 print(iss)
 
-
-
 ts = load.timescale()
 t = ts.now()
 position = iss.at(t)
